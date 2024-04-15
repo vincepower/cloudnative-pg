@@ -41,9 +41,16 @@ func (cluster *Cluster) GetSyncReplicasData() (syncReplicas int, electableSyncRe
 	// Lower to ready replicas if min sync replicas is too high
 	// (this is a self-healing procedure that prevents from a
 	// temporarily unresponsive system)
-	if readyReplicas < cluster.Spec.MinSyncReplicas {
+	// This will not apply when enforceMinSyncReplicas is true
+	if readyReplicas < cluster.Spec.MinSyncReplicas && !cluster.Spec.EnforceMinSyncReplicas {
 		syncReplicas = readyReplicas
 		log.Warning("Ignore minSyncReplicas to enforce self-healing",
+			"syncReplicas", readyReplicas,
+			"minSyncReplicas", cluster.Spec.MinSyncReplicas,
+			"maxSyncReplicas", cluster.Spec.MaxSyncReplicas)
+	} else if readyReplicas < cluster.Spec.MinSyncReplicas && cluster.Spec.EnforceMinSyncReplicas {
+		log.Warning("Available syncReplicas are lower than minSyncReplicas",
+			"enforceMinSyncReplicas", cluster.Spec.EnforceMinSyncReplicas,
 			"syncReplicas", readyReplicas,
 			"minSyncReplicas", cluster.Spec.MinSyncReplicas,
 			"maxSyncReplicas", cluster.Spec.MaxSyncReplicas)
@@ -51,7 +58,8 @@ func (cluster *Cluster) GetSyncReplicasData() (syncReplicas int, electableSyncRe
 
 	electableSyncReplicas = cluster.getElectableSyncReplicas()
 	numberOfElectableSyncReplicas := len(electableSyncReplicas)
-	if numberOfElectableSyncReplicas < syncReplicas {
+	// Lower to min sync replicas if not enough electable sync replicas and enfoceMinSyncReplicas is false
+	if numberOfElectableSyncReplicas < syncReplicas && !cluster.Spec.EnforceMinSyncReplicas {
 		log.Warning("lowering sync replicas due to not enough electable instances for sync replication "+
 			"given the constraints",
 			"electableSyncReplicasWithoutConstraints", syncReplicas,

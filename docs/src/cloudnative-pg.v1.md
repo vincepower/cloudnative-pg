@@ -1611,6 +1611,15 @@ decreased if the number of ready standbys is lower than this.
 Undefined or 0 disable synchronous replication.</p>
 </td>
 </tr>
+<tr><td><code>enforceMinSyncReplicas</code><br/>
+<i>bool</i>
+</td>
+<td>
+   <p>This overrides the default self-healing behaviour which reduces the
+   required minSyncReplicas when there are not enough readyReplicas to meet
+   the criteria.</p>
+</td>
+</tr>
 <tr><td><code>postgresql</code><br/>
 <a href="#postgresql-cnpg-io-v1-PostgresConfiguration"><i>PostgresConfiguration</i></a>
 </td>

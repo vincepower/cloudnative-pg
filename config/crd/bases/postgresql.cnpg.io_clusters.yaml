@@ -2966,6 +2966,13 @@ spec:
                   available.
                 minimum: 0
                 type: integer
+              enforceMinSyncReplicas:
+                default: false
+                description: |-
+                  This overrides the default self-healing behaviour which reduces the
+                  required minSyncReplicas when there are not enough readyReplicas to
+                  meet the criteria.
+                type: boolean
               monitoring:
                 description: The configuration of the monitoring infrastructure of
                   this cluster

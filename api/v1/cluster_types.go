@@ -304,6 +304,13 @@ type ClusterSpec struct {
 	// +optional
 	MaxSyncReplicas int `json:"maxSyncReplicas,omitempty"`
 
+	// This overrides the default self-healing behaviour which reduces the
+	// required minSyncReplicas when there are not enough readyReplicas to
+	// meet the criteria.
+	// +kubebuilder:default:=false
+	// +optional
+	EnforceMinSyncReplicas bool `json:"enforceMinSyncReplicas,omitempty"`
+
 	// Configuration of the PostgreSQL server
 	// +optional
 	PostgresConfiguration PostgresConfiguration `json:"postgresql,omitempty"`

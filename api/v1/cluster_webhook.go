@@ -356,6 +356,7 @@ func (r *Cluster) Validate() (allErrs field.ErrorList) {
 		r.validatePrimaryUpdateStrategy,
 		r.validateMinSyncReplicas,
 		r.validateMaxSyncReplicas,
+		r.validateEnforceMinSyncReplicas,
 		r.validateStorageSize,
 		r.validateWalStorageSize,
 		r.validateEphemeralVolumeSource,
@@ -1573,6 +1574,22 @@ func (r *Cluster) validateMinSyncReplicas() field.ErrorList {
 			field.NewPath("spec", "minSyncReplicas"),
 			r.Spec.MinSyncReplicas,
 			"minSyncReplicas cannot be greater than maxSyncReplicas"))
+	}
+
+	return result
+}
+
+// Validate the minimum number of synchronous instances
+func (r *Cluster) validateEnforceMinSyncReplicas() field.ErrorList {
+	var result field.ErrorList
+
+	if r.Spec.EnforceMinSyncReplicas || !r.Spec.EnforceMinSyncReplicas {
+		// Validating its a boolean
+	} else {
+		result = append(result, field.Invalid(
+			field.NewPath("spec", "enforceMinSyncReplicas"),
+			r.Spec.MinSyncReplicas,
+			"enforceMinSyncReplicas needs to be true or false"))
 	}
 
 	return result

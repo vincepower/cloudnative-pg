@@ -676,6 +676,7 @@ endLSN
 endWal
 endpointCA
 endpointURL
+enforceMinSyncReplicas
 enterprisedb
 env
 envFrom

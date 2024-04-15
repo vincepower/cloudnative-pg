@@ -1,0 +1,21 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cluster-example-syncreplicas-enforce
+spec:
+  instances: 5
+
+  minSyncReplicas: 2
+  maxSyncReplicas: 3
+  enforceMinSyncReplicas: true
+  bootstrap:
+    initdb:
+      database: appdb
+      owner: appuser
+      postInitApplicationSQL:
+        - create table application_numbers (i integer)
+        - insert into application_numbers (select generate_series(1,10000))
+
+  storage:
+    size: 1G

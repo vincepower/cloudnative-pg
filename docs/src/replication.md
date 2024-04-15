@@ -47,7 +47,7 @@ At the moment, CloudNativePG natively and transparently manages
 physical streaming replicas within a cluster in a declarative way, based on
 the number of provided `instances` in the `spec`:
 
-```
+```sql
 replicas = instances - 1 (where  instances > 0)
 ```
 
@@ -59,13 +59,12 @@ CREATE USER streaming_replica WITH REPLICATION;
    -- NOSUPERUSER INHERIT NOCREATEROLE NOCREATEDB NOBYPASSRLS
 ```
 
-
 Out of the box, the operator automatically sets up streaming replication within
 the cluster over an encrypted channel and enforces TLS client certificate
 authentication for the `streaming_replica` user - as highlighted by the following
 excerpt taken from `pg_hba.conf`:
 
-```
+```bash
 # Require client certificate authentication for the streaming_replica user
 hostssl postgres streaming_replica all cert
 hostssl replication streaming_replica all cert
@@ -114,7 +113,7 @@ In case both `minSyncReplicas` and `maxSyncReplicas` are set, CloudNativePG
 automatically updates the `synchronous_standby_names` option in
 PostgreSQL to the following value:
 
-```
+```sql
 ANY q (pod1, pod2, ...)
 ```
 
@@ -128,7 +127,7 @@ Where:
     To provide self-healing capabilities, the operator can ignore
     `minSyncReplicas` if such value is higher than the currently available
     number of replicas. Synchronous replication is automatically disabled
-    when `readyReplicas` is `0`.
+    when `readyReplicas` is `0` unless you set `enforceMinSyncReplicas` to `true`.
 
 As stated in the
 [PostgreSQL documentation](https://www.postgresql.org/docs/current/warm-standby.html#SYNCHRONOUS-REPLICATION),
@@ -137,7 +136,7 @@ transaction commits wait until their WAL records are replicated to at least the
 requested number of synchronous standbys in the list*.
 
 !!! Important
-    Even though the operator chooses self-healing over enforcement of
+    Even though the operator defaults to choosing self-healing over enforcement of
     synchronous replication settings, our recommendation is to plan for
     synchronous replication only in clusters with 3+ instances or,
     more generally, when `maxSyncReplicas < (instances - 1)`.
@@ -179,8 +178,7 @@ configured by the operator between the current primary and the replicas which
 are located on nodes having a value of the availability zone label different
 from that of the node where the primary is:
 
-
-``` yaml
+```yaml
 spec:
   instances: 3
   postgresql:
@@ -396,4 +394,3 @@ the lag from the primary.
 !!! Seealso "Monitoring"
     Please refer to the ["Monitoring" section](monitoring.md) for details on
     how to monitor a CloudNativePG deployment.
-

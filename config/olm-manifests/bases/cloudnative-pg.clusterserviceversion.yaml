@@ -202,6 +202,12 @@ spec:
         x-descriptors:
           - 'urn:alm:descriptor:com.tectonic.ui:number'
           - 'urn:alm:descriptor:com.tectonic.ui:advanced'
+      - path: enforceMinSyncReplicas
+        displayName: Enfoce synchronous replication
+        description: This overrides the default self-healing behaviour which reduces the required minSyncReplicas when there are not enough readyReplicas to meet the criteria.
+        x-descriptors:
+          - 'urn:alm:descriptor:com.tectonic.ui:booleanSwitch'
+          - 'urn:alm:descriptor:com.tectonic.ui:advanced'
       - path: postgresql
         displayName: PostgreSQL Configuration
         description: Options for postgresql.conf
